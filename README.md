@@ -26,3 +26,33 @@ https://lnkd.in/gxSFkyH6​
 https://lnkd.in/eatXtetJ​
 • Created a web application where I hosted all the mentioned competitions, extra code snippets and personal lecture material for the students:​
 https://lnkd.in/gxSFkyH6
+
+Summary Skeleton
+├───0_Educational-WebApp
+├───1_Competitions
+│   ├───1_Coding
+│   ├───2_TimeSeries
+│   │   └───Submissions
+│   └───3_MachineLearning
+│       └───Submissions
+├───2_IndustryApplications
+│   ├───1_DataScienceTooling
+│   │   └───test_uploads_csvs
+│   ├───2_ML-ModelMonitoring
+│   └───3_LanguageModel_FinTech
+│       ├───.ipynb_checkpoints
+│       ├───CharModelDev
+│       │   ├───.ipynb_checkpoints
+│       │   ├───CharModel-v1
+│       │   │   ├───.ipynb_checkpoints
+│       │   │   ├───Images
+│       │   │   │   └───.ipynb_checkpoints
+│       │   │   ├───training_checkpoints_CharWeights
+│       │   │   └───training_checkpoints_CharWeights2
+│       │   └───CharModel-v2
+│       │       ├───.ipynb_checkpoints
+│       │       └───training_checkpoints_CharWeights_V2
+│       └───__pycache__
+└───3_ProjectEngagements
+    ├───Peer_Review_Automation_Email
+    └───Project_Panel_Judges
