@@ -27,7 +27,8 @@ https://lnkd.in/eatXtetJ​
 • Created a web application where I hosted all the mentioned competitions, extra code snippets and personal lecture material for the students:​
 https://lnkd.in/gxSFkyH6
 
-Summary Skeleton
+* File Directory:
+```
 ├───0_Educational-WebApp
 ├───1_Competitions
 │   ├───1_Coding
@@ -56,3 +57,4 @@ Summary Skeleton
 └───3_ProjectEngagements
     ├───Peer_Review_Automation_Email
     └───Project_Panel_Judges
+```
