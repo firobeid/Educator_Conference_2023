@@ -1,3 +1,6 @@
+# Educator Conference 2023 (edx)
+## Seminar's Summary
+
 Throughout my journey at UC Berkley fintech bootcamps for working professionals, I have experimented, adopted and applied the following techniques to engage my students via virtual classes, adapt market trends to reflect practicality off lesson plans and gave hands on real life ML competition or hackathon flavors:​
 
 • Invited students from my other cohorts for project showcasing or giving advice at the start of every cohort​
