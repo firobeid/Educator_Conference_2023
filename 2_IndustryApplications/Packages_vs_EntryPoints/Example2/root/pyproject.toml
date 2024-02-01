@@ -1,0 +1,10 @@
+[project]
+name = 'Firo'
+requires-python = ">=3.7"
+version = "1.0.0"
+authors = [
+    {name = "Firas A Obeid", email = "firas@notgonatellyou.com"},
+]
+
+[project.scripts]
+day-extractor = "entry_point.day_extractor:diff_date"
