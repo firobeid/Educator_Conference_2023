@@ -44,10 +44,10 @@ def encode2bytes(text):
 #Tokenizer
 def tokenize():
     import json
-    with open('./CharModelDev/CharModel-v2/Tokenizer.json', encoding='utf-8') as f:
+    with open('C:/Users/feras.FIROMEGAPC/Desktop/Models/CharModelDev/CharModel-v2/Tokenizer.json', encoding='utf-8') as f:
         data = json.load(f)
         tokenizer = tf.keras.preprocessing.text.tokenizer_from_json(data)
-    with open('./CharModelDev/CharModel-v2/index2char.json', encoding='utf-8') as f:
+    with open('C:/Users/feras.FIROMEGAPC/Desktop/Models/CharModelDev/CharModel-v2/index2char.json', encoding='utf-8') as f:
         index2char = json.load(f)
     char2index = dict((int(v),int(k)) for k,v in index2char.items())
     tokenizer.word_index = char2index
