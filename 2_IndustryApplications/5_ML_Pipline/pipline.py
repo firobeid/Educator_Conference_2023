@@ -44,13 +44,14 @@ class ColumnNameKeeper(TransformerMixin):
     
 class NullImputa(TransformerMixin):   
     '''
-    __Author__  = Firad Obeid
-    '''   
-    def __init__(self, min_count_na = 5):      
-        self.min_count_na = min_count_na      
+    __Author__ = 'Firas Obeid'
+    '''
+    def __init__(self, min_count_na = 5, missing_indicator = True):      
+        self.min_count_na = min_count_na   
+        self.missing_indicator = missing_indicator
         self.missing_cols = None    
         self.additional_features = []  # Store names of additional features  
-        self.column_names = None  # Store column names after transformation  
+        self.column_names = None  # Store column names after transformation 
         
     def fit(self, X, y=None):      
         self.missing_cols = X.columns[X.isnull().any()].tolist()      
@@ -62,7 +63,7 @@ class NullImputa(TransformerMixin):
             if col in X.columns[X.dtypes == object].tolist():      
                 X[col] = X[col].fillna(X[col].mode()[0])      
             else:      
-                if col in self.missing_cols:      
+                if (col in self.missing_cols) & (self.missing_indicator):      
                     new_col_name = f'{col}-mi'  
                     X[new_col_name] = X[col].isna().astype(int)     
                     self.additional_features.append(new_col_name)  # Store the new column name  
@@ -84,25 +85,26 @@ def ks_stat(y_pred, dtrain)-> Tuple[str, float]:
     return 'ks_stat', ks_stat 
 
 class XGBoostClassifierWithEarlyStopping(BaseEstimator, ClassifierMixin):    
-    def __init__(self, nfolds=5, **params):    
+    def __init__(self, nfolds=5, early_stopping_rounds=50, **params):    
         self.params = params    
         self.evals_result = {}    
         self.bst = None  
-        self.nfolds = nfolds  
-        self.cvresult = None  # initialize cvresult attribute 
+        self.nfolds = nfolds
+        self.early_stopping_rounds = early_stopping_rounds
+        self.cvresult = None
     
     def fit(self, X, y, **fit_params):    
         dtrain = xgb.DMatrix(X, label=y)  
         self.cvresult = xgb.cv(self.params, dtrain, num_boost_round=10000,  verbose_eval=True, maximize=True,
                           nfold=self.nfolds, metrics=['auc'], custom_metric = ks_stat,
-                          early_stopping_rounds=10, stratified=True,  
+                          early_stopping_rounds=self.early_stopping_rounds, stratified=True,  
                           seed=42)  
         self.bst = xgb.train(self.params, dtrain, num_boost_round=self.cvresult.shape[0], feval = ks_stat)  
         return self    
     
     def predict(self, X):    
         dtest = xgb.DMatrix(X)    
-        return self.bst.predict(dtest)  
+        return self.bst.predict(dtest) 
 
   
 def init_model_params(y_train):
@@ -129,17 +131,19 @@ def init_model_params(y_train):
              "subsample" : 0.8, "colsample_bylevel" : 1, "random_state" : 42, "verbosity" : 3}   
 
 init_model_params(y_train)
+
+numerical_cols = X_train.select_dtypes(include=np.number).columns.tolist()  
+categorical_cols = X_train.select_dtypes(include=['object', 'bool', 'category']).columns.tolist()  
 # Create a preprocessor for numerical columns  
 numeric_transformer = Pipeline(steps=[  
-    ('custome-imputer', NullImputa(5)),  
+    ('custome-imputer', NullImputa(min_count_na = 5, missing_indicator=False)),  
     ('scaler', StandardScaler())])  
 
 # Create a preprocessor for categorical columns  
 categorical_transformer = Pipeline(steps=[  
-    ('custome-imputer', NullImputa(5)),  
-    ('target_encoder', ce.TargetEncoder())])  
+    ('custome-imputer', NullImputa(min_count_na = 5, missing_indicator=False)),  
+    ('target_encoder', ce.TargetEncoder(drop_invariant=True))])  
  
-
 # Combine the preprocessors using a ColumnTransformer  
 preprocessor = ColumnTransformer(  
     transformers=[  
@@ -148,7 +152,12 @@ preprocessor = ColumnTransformer(
   
 # Create a pipeline that combines the preprocessor with the estimator  
 pipeline = Pipeline(steps=[('preprocessor', preprocessor),  
-                           ('classifier', XGBoostClassifierWithEarlyStopping(**params))])  
+                           ('classifier', XGBoostClassifierWithEarlyStopping(
+                               early_stopping_rounds=50,  
+                               nfolds=5,
+                               **params)
+                           )
+                          ])  
   
 # Fit the pipeline to the training data  
 pipeline.fit(X_train, y_train)  
